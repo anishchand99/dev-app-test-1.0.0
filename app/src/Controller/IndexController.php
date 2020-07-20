@@ -73,10 +73,7 @@ class IndexController extends AbstractController
 
     public function user($id)
     {
-        $view        = new View($this->viewPath . '/user.phtml');
-        $view->title = 'Active Users';
-        $view->nav   = $this->nav;
-
+        $view = new View($this->viewPath . '/user.phtml');
         /**
          * Task 3:
          *
@@ -84,7 +81,21 @@ class IndexController extends AbstractController
          * Display that user's information in the view however you see fit. Consider what to display
          * in the view if the ID passed does not return a user.
          */
-
+        $userModel = new Model\User();  //create new model 
+        $user = $userModel->getById($id);         
+        //check if user return is valid or empty
+        if(count($user) == 0){
+            $view->title = "No Such User";            
+        }else{
+            //get the information and update the view
+            $username = $user['username'];
+            $email = $user['email'];
+            $view->title = $username;            
+            $view->id = $id;
+            $view->username = $username;
+            $view->email = $email;
+        }
+        $view->nav = $this->nav;
         $this->response->setBody($view->render());
         $this->response->send();
     }
